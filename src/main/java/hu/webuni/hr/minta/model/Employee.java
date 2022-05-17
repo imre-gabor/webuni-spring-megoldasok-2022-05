@@ -2,6 +2,8 @@ package hu.webuni.hr.minta.model;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Employee {
 
 	private Long employeeId;
