@@ -7,6 +7,7 @@ public class EmployeeDto {
 	private String name;
 	private String title;
 	private int salary;
+	
 	private LocalDateTime entryDate;
 
 	public EmployeeDto() {
