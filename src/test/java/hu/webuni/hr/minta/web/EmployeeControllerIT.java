@@ -48,6 +48,7 @@ public class EmployeeControllerIT {
 		List<EmployeeDto> employeesBefore = getAllEmployees();
 
 		EmployeeDto newEmployee = newInvalidEmployee();
+		
 		saveEmployee(newEmployee)
 		.expectStatus()
 		.isBadRequest();
@@ -93,7 +94,9 @@ public class EmployeeControllerIT {
 		List<EmployeeDto> employeesBefore = getAllEmployees();
 		EmployeeDto invalidEmployee = newInvalidEmployee();
 		invalidEmployee.setId(savedEmployee.getId());
-		modifyEmployee(invalidEmployee).expectStatus().isBadRequest();
+		modifyEmployee(invalidEmployee)
+			.expectStatus()
+			.isBadRequest();
 
 		List<EmployeeDto> employeesAfter = getAllEmployees();
 
