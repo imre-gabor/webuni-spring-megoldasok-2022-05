@@ -1,7 +1,5 @@
 package hu.webuni.hr.minta.config;
 
-import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -3,7 +3,6 @@ package hu.webuni.hr.minta.service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.TreeMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,7 @@ import hu.webuni.hr.minta.config.HrConfigProperties.Smart;
 import hu.webuni.hr.minta.model.Employee;
 
 @Service
-public class SmartEmployeeService implements EmployeeService {
+public class SmartEmployeeService extends AbstractEmployeeService {
 
 	@Autowired
 	HrConfigProperties config;

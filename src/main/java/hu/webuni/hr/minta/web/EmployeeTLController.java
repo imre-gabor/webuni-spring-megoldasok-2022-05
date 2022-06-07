@@ -2,7 +2,6 @@ package hu.webuni.hr.minta.web;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,7 @@ public class EmployeeTLController {
 		model.put("newEmployee", new Employee());
 		return "employees";
 	}
-
+	
 	@PostMapping("/employees")
 	public String addEmployee(Employee employee) {
 		allEmployees.add(employee);
@@ -36,7 +35,7 @@ public class EmployeeTLController {
 	}
 	
 	@GetMapping("/deleteEmployee/{id}")
-	public String listEmployees(@PathVariable long id) {
+	public String deleteEmployees(@PathVariable long id) {
 		allEmployees.removeIf(emp -> emp.getEmployeeId() == id);
 //		Iterator<Employee> iterator = allEmployees.iterator();
 //		while (iterator.hasNext()){
