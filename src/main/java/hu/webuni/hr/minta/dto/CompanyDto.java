@@ -23,7 +23,7 @@ public class CompanyDto {
 	@JsonView(BaseData.class)
 	private String address;
 	
-	List<EmployeeDto> employees = new ArrayList<>();
+	private List<EmployeeDto> employees = new ArrayList<>();
 	
 	public CompanyDto() {
 		

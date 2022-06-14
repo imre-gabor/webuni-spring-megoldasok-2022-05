@@ -6,7 +6,9 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 @Entity
 public class Company {
@@ -20,6 +22,9 @@ public class Company {
 	
 	@OneToMany(mappedBy="company")
 	private List<Employee> employees;
+	
+	@ManyToOne
+	private CompanyType companyType;
 	
 	public Company() {
 		
@@ -105,4 +110,11 @@ public class Company {
 			return false;
 		return true;
 	}
+ 	public CompanyType getCompanyType() {
+		return companyType;
+	}
+
+	public void setCompanyType(CompanyType companyType) {
+		this.companyType = companyType;
+	}	
 }

@@ -32,8 +32,8 @@ public class EmployeeController {
 	private EmployeeService employeeService;
 	
 	@Autowired
-	EmployeeMapper employeeMapper;
-
+	private EmployeeMapper employeeMapper;
+	
 	@Autowired
 	private EmployeeRepository employeeRepository;
 	
