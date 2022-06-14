@@ -47,7 +47,8 @@ public class CompanyController {
 	@GetMapping
 	public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full){
 		List<Company> companies = companyService.findAll();
-		return mapCompanies(companies, full);
+		List<CompanyDto> companyDtos = mapCompanies(companies, full);
+		return companyDtos;
 	}
 
 	private List<CompanyDto> mapCompanies(List<Company> companies, Boolean full) {
@@ -124,6 +125,15 @@ public class CompanyController {
 	public CompanyDto replaceEmployees(@PathVariable long id, @RequestBody List<EmployeeDto> employees) {
 		return companyMapper.companyToDto(companyService.replaceEmployees(id, companyMapper.dtosToEmployees(employees)));
 	}
+	
+	
+	@GetMapping(params = "aboveSalary")
+	public List<CompanyDto> getCompaniesAboveSalary(@RequestParam int aboveSalary,
+			@RequestParam(required = false) Boolean full) {
+		List<Company> filteredCompanies = companyRepository.findByEmployeeWithSalaryHigherThan(aboveSalary);
+		return mapCompanies(filteredCompanies, full);
+	}
+	
 	@GetMapping(params = "aboveEmployeeNumber")
 	public List<CompanyDto> getCompaniesAboveEmployeeNumber(@RequestParam int aboveEmployeeNumber,
 			@RequestParam(required = false) Boolean full) {

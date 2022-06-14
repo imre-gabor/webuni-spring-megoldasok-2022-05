@@ -5,6 +5,9 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,14 +42,19 @@ public class EmployeeController {
 	
 	
 	@GetMapping
-	public List<EmployeeDto> getAll(@RequestParam(required = false) Integer minSalary){
-		List<Employee> employees = null;
+	public List<EmployeeDto> getAll(@RequestParam(required = false) Integer minSalary, @PageableDefault(sort = {"employeeId"}) Pageable pageable){
+		Page<Employee> employeesPage = null;
 		if(minSalary == null) {
-			employees = employeeService.findAll();
+			employeesPage = employeeRepository.findAll(pageable);
 		} else {
-			employees = employeeRepository.findBySalaryGreaterThan(minSalary);
+			employeesPage = employeeRepository.findBySalaryGreaterThan(minSalary, pageable);
 		}
-		return employeeMapper.employeesToDtos(employees);
+		System.out.println(employeesPage.getTotalElements());
+		System.out.println(employeesPage.getTotalPages());
+		System.out.println(employeesPage.isLast());
+		System.out.println(employeesPage.isFirst());
+		
+		return employeeMapper.employeesToDtos(employeesPage.getContent());
 	}
 	
 	//1. megoldás
