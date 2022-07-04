@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 
 import hu.webuni.hr.minta.model.Company;
 import hu.webuni.hr.minta.model.Employee;
+import hu.webuni.hr.minta.model.Position;
 import hu.webuni.hr.minta.repository.CompanyRepository;
 import hu.webuni.hr.minta.repository.EmployeeRepository;
+import hu.webuni.hr.minta.repository.PositionRepository;
 
 @Service
 public class CompanyService {
@@ -18,7 +20,10 @@ public class CompanyService {
 	private CompanyRepository companyRepository;
 	@Autowired
 	private EmployeeRepository employeeRepository;
-
+	
+	@Autowired
+	private PositionRepository positionRepository;
+	
 	public Company save(Company company) {
 		company.setId(null);
 		return companyRepository.save(company);
