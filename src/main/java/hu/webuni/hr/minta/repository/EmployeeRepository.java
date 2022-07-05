@@ -2,6 +2,7 @@ package hu.webuni.hr.minta.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,4 +45,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSp
 			+ "AND e2.company.id=:companyId"
 			+ ")")
 	int updateSalaries(String position, int minSalary, long companyId);
+
+	Optional<Employee> findByUsername(String username);
 }

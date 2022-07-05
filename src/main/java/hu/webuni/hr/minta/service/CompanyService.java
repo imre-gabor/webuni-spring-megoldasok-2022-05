@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hu.webuni.hr.minta.model.Company;
 import hu.webuni.hr.minta.model.Employee;
@@ -22,13 +23,18 @@ public class CompanyService {
 	private EmployeeRepository employeeRepository;
 	
 	@Autowired
+	private EmployeeService employeeService;
+	
+	@Autowired
 	private PositionRepository positionRepository;
 	
+	@Transactional
 	public Company save(Company company) {
 		company.setId(null);
 		return companyRepository.save(company);
 	}
 
+	@Transactional
 	public Company update(Company company) {
 		if(!companyRepository.existsById(company.getId()))
 			return null;
@@ -47,31 +53,34 @@ public class CompanyService {
 		companyRepository.deleteById(id);
 	}
 	
+	@Transactional
 	public Company addEmployee(long id, Employee employee) {
-		Company company = companyRepository.findById(id).get();
+		Company company = companyRepository.findByIdWithEmployees(id).get();
 		company.addEmployee(employee);
-		employeeRepository.save(employee);
+		employeeService.save(employee);
 		return company;
 	}
 	
+	@Transactional
 	public Company deleteEmployee(long id, long employeeId) {
 		Company company = companyRepository.findById(id).get();
 		Employee employee = employeeRepository.findById(employeeId).get();
 		employee.setCompany(null);
 		company.getEmployees().remove(employee);
-		employeeRepository.save(employee);
+		//employeeRepository.save(employee); --> transactional miatt nem kell
 		return company;
 	}
 	
+	@Transactional
 	public Company replaceEmployees(long id, List<Employee> employees) {
-		Company company = companyRepository.findById(id).get();
+		Company company = companyRepository.findById(id).get(); //findByIdWithEmployees hívással eggyel kevesebb SELECT lenne
 		for (Employee employee : company.getEmployees()) {
 			employee.setCompany(null);
 		}
 		company.getEmployees().clear();
 		for (Employee employee : employees) {
 			company.addEmployee(employee);
-			employeeRepository.save(employee);
+			employeeService.save(employee);
 		}
 		return company;
 	}

@@ -3,6 +3,7 @@ package hu.webuni.hr.minta.service;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,9 @@ public class InitDbService {
 	
 	@Autowired
 	PositionDetailsByCompanyRepository positionDetailsByCompanyRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Transactional
 	public void initDb() {
@@ -39,6 +43,8 @@ public class InitDbService {
 		
 		Employee newEmployee1 = employeeRepository.save(new Employee(null, "ssdf", /*"developer",*/ 200000, LocalDateTime.now()));
 		newEmployee1.setPosition(developer);
+		newEmployee1.setUsername("user1");
+		newEmployee1.setPassword(passwordEncoder.encode("pass"));
 		
 		Employee newEmployee2 = employeeRepository.save(new Employee(null, "t35", /*"tester",*/ 200000, LocalDateTime.now()));
 		newEmployee2.setPosition(tester);

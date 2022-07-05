@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,8 +28,13 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	private PositionRepository positionRepository;
 
 	@Override
+	@Transactional
 	public Employee save(Employee employee) {
 		employee.setEmployeeId(null);
+		return saveWithPosition(employee);
+	}
+
+	private Employee saveWithPosition(Employee employee) {
 		Position position = employee.getPosition();
 		if(position != null) {
 			String positionName = position.getName();
@@ -49,10 +55,11 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	}
 
 	@Override
+	@Transactional
 	public Employee update(Employee employee) {
 		if(!employeeRepository.existsById(employee.getEmployeeId()))
 			return null;
-		return employeeRepository.save(employee);
+		return saveWithPosition(employee);
 	}
 
 	@Override
@@ -66,6 +73,7 @@ public abstract class AbstractEmployeeService implements EmployeeService {
 	}
 
 	@Override
+	@Transactional
 	public void delete(long id) {
 		employeeRepository.deleteById(id);
 	}

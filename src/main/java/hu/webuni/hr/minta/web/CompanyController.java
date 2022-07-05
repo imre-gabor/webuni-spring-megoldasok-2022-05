@@ -46,7 +46,7 @@ public class CompanyController {
 	// 1. megoldás
 	@GetMapping
 	public List<CompanyDto> getAll(@RequestParam(required = false) Boolean full){
-		List<Company> companies = companyService.findAll();
+		List<Company> companies = isFull(full)? companyRepository.findAllWithEmployees() : companyService.findAll();
 		List<CompanyDto> companyDtos = mapCompanies(companies, full);
 		return companyDtos;
 	}
@@ -80,7 +80,9 @@ public class CompanyController {
 	
 	@GetMapping("/{id}")
 	public CompanyDto getById(@PathVariable long id, @RequestParam(required = false) Boolean full) {
-		Company company = companyService.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+		Company company = 
+				(isFull(full) ? companyRepository.findByIdWithEmployees(id) : companyService.findById(id))
+				.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 		if(isFull(full))
 			return companyMapper.companyToDto(company);
 		else
