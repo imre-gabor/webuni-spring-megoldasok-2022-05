@@ -1,5 +1,6 @@
 package hu.webuni.hr.minta.config;
 
+import java.time.Duration;
 import java.util.TreeMap;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 public class HrConfigProperties {
 
 	private Salary salary = new Salary();
+	private Jwt jwt = new Jwt();
 
 	public Salary getSalary() {
 		return salary;
@@ -122,6 +124,50 @@ public class HrConfigProperties {
 			this.limits = limits;
 		}
 
+	}
+	
+	
+	
+	public static class Jwt {
+		
+		private String secret;
+		private Duration expiry;
+		private String issuer;
+		private String alg;
+		public String getSecret() {
+			return secret;
+		}
+		public void setSecret(String secret) {
+			this.secret = secret;
+		}
+		public Duration getExpiry() {
+			return expiry;
+		}
+		public void setExpiry(Duration expiry) {
+			this.expiry = expiry;
+		}
+		public String getIssuer() {
+			return issuer;
+		}
+		public void setIssuer(String issuer) {
+			this.issuer = issuer;
+		}
+		public String getAlg() {
+			return alg;
+		}
+		public void setAlg(String alg) {
+			this.alg = alg;
+		}
+	}
+
+
+
+	public Jwt getJwt() {
+		return jwt;
+	}
+
+	public void setJwt(Jwt jwt) {
+		this.jwt = jwt;
 	}
 
 }

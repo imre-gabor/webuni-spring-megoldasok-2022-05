@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -17,6 +19,7 @@ import org.springframework.util.StringUtils;
 import hu.webuni.hr.minta.dto.HolidayRequestFilterDto;
 import hu.webuni.hr.minta.model.Employee;
 import hu.webuni.hr.minta.model.HolidayRequest;
+import hu.webuni.hr.minta.model.HrUser;
 import hu.webuni.hr.minta.repository.HolidayRequestRepository;
 
 
@@ -72,8 +75,17 @@ public class HolidayRequestService {
 	}
 
 	@Transactional
-	public HolidayRequest approveHolidayRequest(long id, long approverId, boolean status) {
+	public HolidayRequest approveHolidayRequest(long id, boolean status) {
 		HolidayRequest holidayRequest = holidayRequestRepository.findById(id).get();
+		Long approverId = getCurrentUser().getEmployee().getEmployeeId();
+		Employee manager = holidayRequest.getEmployee().getManager();
+		if(manager != null) {
+			if(!manager.getEmployeeId().equals(approverId))
+				throw new AccessDeniedException("Approve is allowed only by the manager of the employee.");
+		} else if (!holidayRequest.getEmployee().getEmployeeId().equals(approverId))
+			throw new AccessDeniedException("Approve is allowed only by the owner of the request.");
+		
+		
 		holidayRequest.setApprover(employeeService.findById(approverId).get());
 		holidayRequest.setApproved(status);
 		holidayRequest.setApprovedAt(LocalDateTime.now());
@@ -94,10 +106,22 @@ public class HolidayRequestService {
 	@Transactional
 	public void deleteHolidayRequest(long id) {
 		HolidayRequest holidayRequest = holidayRequestRepository.findById(id).get();
+		checkOwnerOfHolidayRequest(holidayRequest);
+		
 		if (holidayRequest.getApproved() != null)
 			throw new InvalidParameterException();
 		holidayRequest.getEmployee().getHolidayRequests().remove(holidayRequest);
 		holidayRequestRepository.deleteById(id);
+	}
+
+	private void checkOwnerOfHolidayRequest(HolidayRequest holidayRequest) {
+		HrUser user = getCurrentUser();
+		if(!holidayRequest.getEmployee().getEmployeeId().equals(user.getEmployee().getEmployeeId()))
+			throw new AccessDeniedException("Holiday request is not onwed by current user");
+	}
+
+	private HrUser getCurrentUser() {
+		return (HrUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 	}
 
 }

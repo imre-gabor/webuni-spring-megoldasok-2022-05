@@ -47,10 +47,16 @@ public class InitDbService {
 		newEmployee1.setPassword(passwordEncoder.encode("pass"));
 		
 		Employee newEmployee2 = employeeRepository.save(new Employee(null, "t35", /*"tester",*/ 200000, LocalDateTime.now()));
+		newEmployee2.setManager(newEmployee1);
+		newEmployee2.setUsername("user2");
+		newEmployee2.setPassword(passwordEncoder.encode("pass"));
 		newEmployee2.setPosition(tester);
 		
 		Employee newEmployee3 = employeeRepository.save(new Employee(null, "tester2", /*"tester",*/ 200000, LocalDateTime.now()));
 		newEmployee3.setPosition(tester);
+		newEmployee3.setUsername("user3");
+		newEmployee3.setPassword(passwordEncoder.encode("pass"));
+		newEmployee3.setManager(newEmployee1);
 		
 		Company newCompany = companyRepository.save(new Company(null, 10, "sdfsd", "", null));
 		newCompany.addEmployee(newEmployee2);

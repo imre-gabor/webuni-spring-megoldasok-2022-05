@@ -1,4 +1,4 @@
-package hu.webuni.hr.minta.service;
+package hu.webuni.hr.minta.security;
 
 import java.util.Arrays;
 

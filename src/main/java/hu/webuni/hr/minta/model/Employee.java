@@ -2,6 +2,7 @@ package hu.webuni.hr.minta.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -38,6 +39,9 @@ public class Employee {
 	
 	@ManyToOne
 	private Employee manager;
+	
+	@OneToMany(mappedBy = "manager")
+	private Collection<Employee> managedEmployees;
 	
 	public Employee() {
 	}
@@ -172,6 +176,14 @@ public class Employee {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public Collection<Employee> getManagedEmployees() {
+		return managedEmployees;
+	}
+
+	public void setManagedEmployees(Collection<Employee> managedEmployees) {
+		this.managedEmployees = managedEmployees;
 	}
 	
 

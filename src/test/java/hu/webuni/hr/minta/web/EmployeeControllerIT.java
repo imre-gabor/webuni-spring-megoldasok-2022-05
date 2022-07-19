@@ -19,6 +19,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
 
 import hu.webuni.hr.minta.dto.EmployeeDto;
+import hu.webuni.hr.minta.dto.LoginDto;
 import hu.webuni.hr.minta.model.Employee;
 import hu.webuni.hr.minta.repository.EmployeeRepository;
 
@@ -42,6 +43,8 @@ public class EmployeeControllerIT {
 	@Autowired
 	PasswordEncoder passwordEncoder;
 	
+	String jwt;
+	
 	@BeforeEach
 	public void init() {
 		if(employeeRepository.findByUsername(TESTUSER_NAME).isEmpty()) {
@@ -50,6 +53,17 @@ public class EmployeeControllerIT {
 			testuser.setPassword(passwordEncoder.encode(PASSWORD));
 			employeeRepository.save(testuser);
 		}
+		
+		LoginDto body = new LoginDto();
+		body.setPassword(PASSWORD);
+		body.setUsername(TESTUSER_NAME);
+		jwt = webTestClient.post()
+			.uri("/api/login")
+			.bodyValue(body)
+			.exchange()
+			.expectBody(String.class)
+			.returnResult()
+			.getResponseBody();
 	}
 	
 	
@@ -139,7 +153,7 @@ public class EmployeeControllerIT {
 		return webTestClient
 				.put()
 				.uri(path)
-				.headers(headers -> headers.setBasicAuth(TESTUSER_NAME, PASSWORD))
+				.headers(headers -> headers.setBearerAuth(jwt))
 				.bodyValue(newEmployee)
 				.exchange();
 	}
@@ -148,7 +162,7 @@ public class EmployeeControllerIT {
 		return webTestClient
 				.post()
 				.uri(BASE_URI)
-				.headers(headers -> headers.setBasicAuth(TESTUSER_NAME, PASSWORD))
+				.headers(headers -> headers.setBearerAuth(jwt))
 				.bodyValue(newEmployee)
 				.exchange();
 	}
@@ -157,7 +171,7 @@ public class EmployeeControllerIT {
 		List<EmployeeDto> responseList = webTestClient
 				.get()
 				.uri(BASE_URI)
-				.headers(headers -> headers.setBasicAuth(TESTUSER_NAME, PASSWORD))
+				.headers(headers -> headers.setBearerAuth(jwt))
 				.exchange()
 				.expectStatus()
 				.isOk()
